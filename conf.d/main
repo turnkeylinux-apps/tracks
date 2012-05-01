@@ -6,27 +6,25 @@ RAILS_APP=railsapp
 /etc/init.d/mysql start
 
 # install tracks and configure it
-unzip /usr/local/src/bsag-tracks-*.zip -d /var/www/
+unzip /usr/local/src/TracksApp-*.zip -d /var/www/
 cd /var/www
 
 mv $RAILS_APP $RAILS_APP.orig
-mv bsag-tracks* $RAILS_APP
+mv TracksApp* $RAILS_APP
 cp $RAILS_APP.orig/config/database.yml $RAILS_APP/config/
 cp $RAILS_APP/config/site.yml.tmpl $RAILS_APP/config/site.yml
 
 cd /var/www/$RAILS_APP
+bundle install --local
 rake db:migrate RAILS_ENV="production"
 
-mkdir -p /var/www/$RAILS_APP/tmp
-mkdir -p /var/www/$RAILS_APP/public/stylesheets/cache
-mkdir -p /var/www/$RAILS_APP/public/javascripts/cache
-
 # configure permissions
+mkdir -p /var/www/$RAILS_APP/tmp
 chown -R root:www-data /var/www/$RAILS_APP
 chown -R www-data:www-data /var/www/$RAILS_APP/tmp
 chown -R www-data:www-data /var/www/$RAILS_APP/log
-chown -R www-data:www-data /var/www/$RAILS_APP/public/stylesheets/cache
-chown -R www-data:www-data /var/www/$RAILS_APP/public/javascripts/cache
+chown -R www-data:www-data /var/www/$RAILS_APP/public/stylesheets
+chown -R www-data:www-data /var/www/$RAILS_APP/public/javascripts
 chmod 666 /var/www/$RAILS_APP/log/*
 
 # turnkey-credit (passenger substitute x2 bug)
@@ -40,9 +38,6 @@ cat >>/var/www/$RAILS_APP/public/stylesheets/standard.css<<EOF
 #turnkey-credit a {
     text-decoration: none;
 }
-#turnkey-credit a:hover {
-    text-decoration: underline;
-}
 EOF
 
 TURNKEY_CREDIT="<div id='turnkey-credit'> <div> <a href='http://www.turnkeylinux.org/tracks'>Tracks Appliance</a> - Powered by <a href='http://www.turnkeylinux.org'>TurnKey Linux</a> </div> </div>"
@@ -51,7 +46,7 @@ FOOTER=/var/www/$RAILS_APP/app/views/shared/_footer.rhtml
 sed -i "s|</div>|$TURNKEY_CREDIT\n</div>|" $FOOTER
 
 # cleanup
-rm /usr/local/src/bsag-tracks-*
+rm /usr/local/src/TracksApp*
 rm -rf /var/www/$RAILS_APP.orig
 
 # stop mysql
