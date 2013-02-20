@@ -1,4 +1,3 @@
 #include <turnkey/base>
 #include <turnkey/rails>
 
-curl        /* support emailing example out-of-the-box */
