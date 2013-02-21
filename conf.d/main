@@ -7,31 +7,33 @@ WEBROOT=/var/www/tracks
 /etc/init.d/mysql start
 
 # install tracks and configure it
-unzip $SRC/TracksApp-*.zip -d $(dirname $WEBROOT)
-rm $SRC/TracksApp-*.zip
+unzip $SRC/tracks-*.zip -d $(dirname $WEBROOT)
+rm $SRC/tracks-*.zip
 
 mv $WEBROOT $WEBROOT.orig
-mv $(dirname $WEBROOT)/TracksApp* $WEBROOT
+mv $(dirname $WEBROOT)/tracks-* $WEBROOT
 cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
 rm -rf $WEBROOT.orig
 
 cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 
 cd $WEBROOT
-bundle install --local
+[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
+bundle --without=test install
 rake db:migrate RAILS_ENV="production"
+unset HTTP_PROXY
 
 # configure permissions
-mkdir -p $WEBROOT/tmp
-chown -R root:www-data $WEBROOT
+mkdir -p $WEBROOT/tmp/cache
 chown -R www-data:www-data $WEBROOT/tmp
 chown -R www-data:www-data $WEBROOT/log
-chown -R www-data:www-data $WEBROOT/public/stylesheets
-chown -R www-data:www-data $WEBROOT/public/javascripts
 chmod 666 $WEBROOT/log/*
 
+# set asset compilation on-demand
+sed -i "/config.assets.compile/ s/false/true/" $WEBROOT/config/environments/production.rb
+
 # turnkey-credit (passenger substitute x2 bug)
-cat >>$WEBROOT/public/stylesheets/standard.css<<EOF
+cat >>$WEBROOT/app/assets/stylesheets/tracks.css.scss<<EOF
 #turnkey-credit {
     font-family: Tahoma,Sans,Arial,Helvetica,Verdana,sans-serif;
     font-size: 11px;
@@ -45,8 +47,9 @@ EOF
 
 TURNKEY_CREDIT="<div id='turnkey-credit'> <div> <a href='http://www.turnkeylinux.org/tracks'>Tracks Appliance</a> - Powered by <a href='http://www.turnkeylinux.org'>TurnKey Linux</a> </div> </div>"
 
-FOOTER=$WEBROOT/app/views/shared/_footer.rhtml
+FOOTER=$WEBROOT/app/views/shared/_footer.html.erb
 sed -i "s|</div>|$TURNKEY_CREDIT\n</div>|" $FOOTER
 
 # stop mysql
 /etc/init.d/mysql stop
+
