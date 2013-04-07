@@ -1,3 +1,18 @@
+turnkey-tracks-12.1 (1) turnkey; urgency=low
+
+  * Upgraded to latest version of Tracks, and patched for ruby 1.8.
+
+  * Hardcoded component versions:
+
+    tracks              2.2
+    rubyenterprise      1.8.7-2012.02_i386_ubuntu10.04
+                        1.8.7-2012.02_amd64_debian6
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Alon Swartz <alon@turnkeylinux.org>  Sun, 07 Apr 2013 08:00:00 +0200
+
 turnkey-tracks-12.0 (1) turnkey; urgency=low
 
   * Tracks
