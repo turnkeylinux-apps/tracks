@@ -20,7 +20,7 @@ cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 cd $WEBROOT
 [ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
 bundle --without=test install
-rake db:migrate RAILS_ENV="production"
+bundle exec rake db:migrate RAILS_ENV="production"
 unset HTTP_PROXY
 
 # configure permissions
