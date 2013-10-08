@@ -29,8 +29,8 @@ chown -R www-data:www-data $WEBROOT/tmp
 chown -R www-data:www-data $WEBROOT/log
 chmod 666 $WEBROOT/log/*
 
-# set asset compilation on-demand
-sed -i "/config.assets.compile/ s/false/true/" $WEBROOT/config/environments/production.rb
+# precompile assets
+bundle exec rake assets:precompile
 
 # turnkey-credit (passenger substitute x2 bug)
 cat >>$WEBROOT/app/assets/stylesheets/tracks.css.scss<<EOF
