@@ -1,12 +1,15 @@
 turnkey-tracks-13.0 (1) turnkey; urgency=low
 
-  * Please refer to turnkey-core's changelog for changes common to all
-    appliances, as well as the following git logs:
-    
-    - https://github.com/turnkeylinux/common
-    - https://github.com/turnkeylinux-apps/tracks
+  * Tracks:
 
- -- Alon Swartz <alon@turnkeylinux.org>  Tue, 06 Aug 2013 15:37:33 +0300
+    - Precompile assets instead of setting ondemand [#126].
+    - Replaced ruby-enterprise with stock ruby from Debian [#102].
+    - Bugfixes for package transitions [#58, #59].
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Alon Swartz <alon@turnkeylinux.org>  Fri, 11 Oct 2013 11:26:46 +0300
 
 turnkey-tracks-12.1 (1) turnkey; urgency=low
 
