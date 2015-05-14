@@ -1,3 +1,4 @@
 #include <turnkey/base>
 #include <turnkey/rails>
 
+libsqlite3-dev
