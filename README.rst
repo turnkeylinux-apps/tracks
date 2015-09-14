@@ -26,4 +26,4 @@ Credentials *(passwords set at first boot)*
 
 
 .. _Tracks: http://www.getontracks.org
-.. _TurnKey Core: http://www.turnkeylinux.org/core
+.. _TurnKey Core: https://www.turnkeylinux.org/core
