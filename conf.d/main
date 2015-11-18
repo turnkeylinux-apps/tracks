@@ -45,7 +45,7 @@ cat >>$WEBROOT/app/assets/stylesheets/tracks.css.scss<<EOF
 }
 EOF
 
-TURNKEY_CREDIT="<div id='turnkey-credit'> <div> <a href='http://www.turnkeylinux.org/tracks'>Tracks Appliance</a> - Powered by <a href='http://www.turnkeylinux.org'>TurnKey Linux</a> </div> </div>"
+TURNKEY_CREDIT="<div id='turnkey-credit'> <div> <a href='https://www.turnkeylinux.org/tracks'>Tracks Appliance</a> - Powered by <a href='https://www.turnkeylinux.org'>TurnKey Linux</a> </div> </div>"
 
 FOOTER=$WEBROOT/app/views/shared/_footer.html.erb
 sed -i "s|</div>|$TURNKEY_CREDIT\n</div>|" $FOOTER
