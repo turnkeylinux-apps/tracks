@@ -1,3 +1,12 @@
+turnkey-tracks-14.2 (1) turnkey; urgency=low
+
+  * Updated to latest version of Tracks (2.3.0)
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Anton Pyrogovskyi <anton@turnkeylinux.org>  Fri, 02 Sep 2016 16:05:13 +0200
+
 turnkey-tracks-14.1 (1) turnkey; urgency=low
 
   * Improved regen-rails-secrets inithook [#591].
