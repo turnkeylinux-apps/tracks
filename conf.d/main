@@ -45,6 +45,9 @@ chown -R www-data:www-data $WEBROOT/tmp
 chown -R www-data:www-data $WEBROOT/log
 chmod 666 $WEBROOT/log/*
 
+mkdir -p $WEBROOT/public/uploads/csv/
+chown -R www-data:www-data $WEBROOT/public/uploads
+
 # precompile assets
 bundle exec rake assets:precompile RAILS_ENV=production
 
