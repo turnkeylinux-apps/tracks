@@ -1,0 +1,7 @@
+#!/bin/bash -e
+# set tracks admin password and email
+
+. /etc/default/inithooks
+
+[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
+$INITHOOKS_PATH/bin/tracks.py --pass="$APP_PASS" --email="$APP_EMAIL"
