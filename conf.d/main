@@ -3,8 +3,11 @@
 SRC=/usr/local/src
 WEBROOT=/var/www/tracks
 
+ADMIN_NAME=admin
+ADMIN_PASS=turnkey1
+
 # start mysql
-/etc/init.d/mysql start
+service mysql start
 
 # install tracks and configure it
 unzip $SRC/tracks-*.zip -d $(dirname $WEBROOT)
@@ -14,6 +17,19 @@ mv $WEBROOT $WEBROOT.orig
 mv $(dirname $WEBROOT)/tracks-* $WEBROOT
 cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
 rm -rf $WEBROOT.orig
+
+# work around MariaDBv10.1 bug
+cat > $WEBROOT/config/initializers/ar_innodb_row_format.rb <<EOF
+require 'active_record/connection_adapters/abstract_mysql_adapter'
+
+module ActiveRecord
+  module ConnectionAdapters
+    class AbstractMysqlAdapter
+      NATIVE_DATABASE_TYPES[:string] = { :name => "varchar", :limit => 191 }
+    end
+  end
+end
+EOF
 
 cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 
@@ -50,6 +66,27 @@ TURNKEY_CREDIT="<div id='turnkey-credit'> <div> <a href='https://www.turnkeylinu
 FOOTER=$WEBROOT/app/views/shared/_footer.html.erb
 sed -i "s|</div>|$TURNKEY_CREDIT\n</div>|" $FOOTER
 
+service apache2 start
+
+sleep 5
+
+# create admin user & init app settings
+TOKEN=$( curl -c /tmp/cookies.txt -s http://localhost/signup \
+        | grep -o '<input name="authenticity_token" .* />' \
+        | grep -o 'value=".*"' \
+        | grep -o '".*"' \
+        | tr -d \" )
+
+curl -s -X POST -b /tmp/cookies.txt http://localhost/users \
+        --data-urlencode "authenticity_token=${TOKEN}" \
+        --data-urlencode "user%5Blogin%5D=${ADMIN_NAME}" \
+        --data-urlencode "user%5Bpassword%5D=${ADMIN_PASS}" \
+        --data-urlencode "user%5Bpassword_confirmation%5D=${ADMIN_PASS}"
+
+service apache2 stop
+
+rm -f /tmp/cookies.txt
+
 # stop mysql
-/etc/init.d/mysql stop
+service mysql stop
 
