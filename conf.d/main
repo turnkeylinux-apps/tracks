@@ -3,8 +3,11 @@
 SRC=/usr/local/src
 WEBROOT=/var/www/tracks
 
+ADMIN_NAME=admin
+ADMIN_PASS=turnkey1
+
 # start mysql
-/etc/init.d/mysql start
+service mysql start
 
 # install tracks and configure it
 unzip $SRC/tracks-*.zip -d $(dirname $WEBROOT)
@@ -15,25 +18,20 @@ mv $(dirname $WEBROOT)/tracks-* $WEBROOT
 cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
 rm -rf $WEBROOT.orig
 
-cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
-
-# update DB files to force DYMANIC row - work around Redmine/MariaDBv10.1 bug
+# work around MariaDBv10.1 bug
 cat > $WEBROOT/config/initializers/ar_innodb_row_format.rb <<EOF
-ActiveSupport.on_load :active_record do
-  module ActiveRecord::ConnectionAdapters
-    class AbstractMysqlAdapter
-      def create_table_with_innodb_row_format(table_name, options = {})
-        table_options = options.reverse_merge(:options => 'ENGINE=InnoDB ROW_FORMAT=DYNAMIC')
+require 'active_record/connection_adapters/abstract_mysql_adapter'
 
-        create_table_without_innodb_row_format(table_name, table_options) do |td|
-         yield td if block_given?
-        end
-      end
-      alias_method_chain :create_table, :innodb_row_format
+module ActiveRecord
+  module ConnectionAdapters
+    class AbstractMysqlAdapter
+      NATIVE_DATABASE_TYPES[:string] = { :name => "varchar", :limit => 191 }
     end
   end
 end
 EOF
+
+cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 
 cd $WEBROOT
 [ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
@@ -47,8 +45,11 @@ chown -R www-data:www-data $WEBROOT/tmp
 chown -R www-data:www-data $WEBROOT/log
 chmod 666 $WEBROOT/log/*
 
+mkdir -p $WEBROOT/public/uploads/csv/
+chown -R www-data:www-data $WEBROOT/public/uploads
+
 # precompile assets
-bundle exec rake assets:precompile
+bundle exec rake assets:precompile RAILS_ENV=production
 
 # turnkey-credit (passenger substitute x2 bug)
 cat >>$WEBROOT/app/assets/stylesheets/tracks.css.scss<<EOF
@@ -68,6 +69,27 @@ TURNKEY_CREDIT="<div id='turnkey-credit'> <div> <a href='https://www.turnkeylinu
 FOOTER=$WEBROOT/app/views/shared/_footer.html.erb
 sed -i "s|</div>|$TURNKEY_CREDIT\n</div>|" $FOOTER
 
+service apache2 start
+
+sleep 5
+
+# create admin user & init app settings
+TOKEN=$( curl -c /tmp/cookies.txt -s http://localhost/signup \
+        | grep -o '<input name="authenticity_token" .* />' \
+        | grep -o 'value=".*"' \
+        | grep -o '".*"' \
+        | tr -d \" )
+
+curl -s -X POST -b /tmp/cookies.txt http://localhost/users \
+        --data-urlencode "authenticity_token=${TOKEN}" \
+        --data-urlencode "user%5Blogin%5D=${ADMIN_NAME}" \
+        --data-urlencode "user%5Bpassword%5D=${ADMIN_PASS}" \
+        --data-urlencode "user%5Bpassword_confirmation%5D=${ADMIN_PASS}"
+
+service apache2 stop
+
+rm -f /tmp/cookies.txt
+
 # stop mysql
-/etc/init.d/mysql stop
+service mysql stop
 
