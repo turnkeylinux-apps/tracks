@@ -17,14 +17,13 @@ import hashlib
 
 from dialog_wrapper import Dialog
 from mysqlconf import MySQL
-from executil import system
 
 
 def usage(s=None):
     if s:
-        print >> sys.stderr, "Error:", s
-    print >> sys.stderr, "Syntax: %s [options]" % sys.argv[0]
-    print >> sys.stderr, __doc__
+        print("Error:", s, file=sys.stderr)
+    print("Syntax: %s [options]" % sys.argv[0], file=sys.stderr)
+    print(__doc__, file=sys.stderr)
     sys.exit(1)
 
 
@@ -32,7 +31,7 @@ def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h",
                                        ['help', 'pass=', 'email='])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     password = ""
@@ -69,7 +68,7 @@ def main():
     m.execute('UPDATE tracks_production.users SET crypted_password="%s", token="%s" WHERE login="admin";' % (hashpass, token))
 
     config = "/var/www/tracks/config/site.yml"
-    system('sed -i "/^admin_email/s|: .*$|: %s|" %s' % (email, config))
+    os.system('sed -i "/^admin_email/s|: .*$|: %s|" %s' % (email, config))
 
 if __name__ == "__main__":
     main()

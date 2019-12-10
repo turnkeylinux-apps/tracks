@@ -2,4 +2,7 @@
 #include <turnkey/rails>
 
 libsqlite3-dev
-python-bcrypt
+python-setuptools
+python-pip
+python3-setuptools
+python3-pip
