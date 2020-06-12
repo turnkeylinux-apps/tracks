@@ -6,8 +6,6 @@ WEBROOT=/var/www/tracks
 ADMIN_NAME=admin
 ADMIN_PASS=turnkey1
 
-python3 -m pip install bcrypt
-
 # start mysql
 service mysql start
 
