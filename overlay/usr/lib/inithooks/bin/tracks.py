@@ -11,6 +11,7 @@ import re
 import sys
 import getopt
 import inithooks_cache
+import subprocess
 
 import bcrypt
 import hashlib
@@ -68,7 +69,7 @@ def main():
     m.execute('UPDATE tracks_production.users SET crypted_password="%s", token="%s" WHERE login="admin";' % (hashpass, token))
 
     config = "/var/www/tracks/config/site.yml"
-    os.system('sed -i "/^admin_email/s|: .*$|: %s|" %s' % (email, config))
+    subprocess.checkoutput(['sed', '-i', '\|^admin_email|s|:.*$|: {}|'.format(email), config])
 
 if __name__ == "__main__":
     main()
