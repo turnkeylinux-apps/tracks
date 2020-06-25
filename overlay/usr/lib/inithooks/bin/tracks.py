@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Set Tracks admin password and email
 
 Option:
@@ -62,14 +62,14 @@ def main():
 
     inithooks_cache.write('APP_EMAIL', email)
 
-    hashpass = bcrypt.hashpw(password, bcrypt.gensalt(prefix=b"2a"))
+    hashpass = bcrypt.hashpw(password.encode(), bcrypt.gensalt(prefix=b"2a"))
     token = hashlib.sha1(os.urandom(128)).hexdigest()
 
     m = MySQL()
     m.execute('UPDATE tracks_production.users SET crypted_password="%s", token="%s" WHERE login="admin";' % (hashpass, token))
 
     config = "/var/www/tracks/config/site.yml"
-    subprocess.checkoutput(['sed', '-i', '\|^admin_email|s|:.*$|: {}|'.format(email), config])
+    subprocess.check_output(['sed', '-i', '\|^admin_email|s|:.*$|: {}|'.format(email), config])
 
 if __name__ == "__main__":
     main()

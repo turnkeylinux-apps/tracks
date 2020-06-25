@@ -1,5 +1,6 @@
 #include <turnkey/base>
 #include <turnkey/rails>
+#include <turnkey/mysql>
 
 libsqlite3-dev
 python3-bcrypt
