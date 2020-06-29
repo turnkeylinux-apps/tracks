@@ -75,12 +75,13 @@ sleep 5
 
 # create admin user & init app settings
 TOKEN=$( curl -c /tmp/cookies.txt -s http://localhost/signup \
-        | grep -o '<input name="authenticity_token" .* />' \
+        | grep -o '<input type="hidden" name="authenticity_token" .* />' \
         | grep -o 'value=".*"' \
         | grep -o '".*"' \
         | tr -d \" )
 
 curl -s -X POST -b /tmp/cookies.txt http://localhost/users \
+        --data-urlencode "utf8=✓" \
         --data-urlencode "authenticity_token=${TOKEN}" \
         --data-urlencode "user%5Blogin%5D=${ADMIN_NAME}" \
         --data-urlencode "user%5Bpassword%5D=${ADMIN_PASS}" \

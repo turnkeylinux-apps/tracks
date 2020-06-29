@@ -62,7 +62,7 @@ def main():
 
     inithooks_cache.write('APP_EMAIL', email)
 
-    hashpass = bcrypt.hashpw(password.encode(), bcrypt.gensalt(prefix=b"2a"))
+    hashpass = bcrypt.hashpw(password.encode(), bcrypt.gensalt(prefix=b"2a")).decode('utf8')
     token = hashlib.sha1(os.urandom(128)).hexdigest()
 
     m = MySQL()
