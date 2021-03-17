@@ -4,3 +4,4 @@
 
 libsqlite3-dev
 python3-bcrypt
+libpq-dev

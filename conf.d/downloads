@@ -5,7 +5,7 @@ dl() {
     cd $2; curl -L -f -O $PROXY $1; cd -
 }
 
-VERSION="2.4.2"
+VERSION="2.5.1"
 
 SRC="/usr/local/src"
 dl https://github.com/TracksApp/tracks/archive/v${VERSION}.zip $SRC
