@@ -16,7 +16,7 @@ import subprocess
 import bcrypt
 import hashlib
 
-from dialog_wrapper import Dialog
+from libinithooks.dialog_wrapper import Dialog
 from mysqlconf import MySQL
 
 
