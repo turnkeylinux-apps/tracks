@@ -1,3 +1,4 @@
+
 #!/bin/sh -ex
 
 SRC=/usr/local/src
@@ -10,8 +11,8 @@ ADMIN_PASS=turnkey1
 service mysql start
 
 # install tracks and configure it
-unzip $SRC/tracks-*.zip -d $(dirname $WEBROOT)
-rm $SRC/tracks-*.zip
+unzip $SRC/master*.zip -d $(dirname $WEBROOT)
+rm $SRC/master*.zip
 
 mv $WEBROOT $WEBROOT.orig
 mv $(dirname $WEBROOT)/tracks-* $WEBROOT
@@ -33,7 +34,7 @@ EOF
 
 cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 
-echo "2.7.0" > $WEBROOT/.ruby-version
+echo "2.7.6" > $WEBROOT/.ruby-version
 
 cd $WEBROOT
 [ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
