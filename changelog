@@ -1,3 +1,17 @@
+turnkey-tracks-17.0 (1) turnkey; urgency=low
+
+  * Updating tracks appliance and its dependencies to v17.0.
+
+  * Downloading tracks repository from master since owners of the software
+    are not adding additional releases at the moment.
+
+  * Changing the ruby version used with the tracks software.
+
+  * Updating tracks.py file to include refactoring done in v17.0 for
+    libinithooks.
+
+ -- Mattalynn Darden <mattie@turnkeylinux.org>  Sat, 10 Dec 2022 15:31:14 +0000
+
 turnkey-tracks-16.1 (1) turnkey; urgency=low
 
   * Updated to latest version of Tracks: v2.5.1.
