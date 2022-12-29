@@ -2,10 +2,11 @@ turnkey-tracks-17.0 (1) turnkey; urgency=low
 
   * Updating tracks appliance and its dependencies to v17.0.
 
-  * Downloading tracks repository from master since owners of the software
-    are not adding additional releases at the moment.
+  * Downloading tracks repository from 2.6.1 release tag from upstream github repository.
 
   * Changing the ruby version used with the tracks software.
+  
+  * Removing ./ruby-version file from build code to allow end user to chose which ruby version to use.
 
   * Updating tracks.py file to include refactoring done in v17.0 for
     libinithooks.
