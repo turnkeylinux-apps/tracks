@@ -10,6 +10,8 @@ turnkey-tracks-17.0 (1) turnkey; urgency=low
 
   * Updating tracks.py file to include refactoring done in v17.0 for
     libinithooks.
+    
+  * Tweaking code in common/conf/rails file to remove warnings that popped up about HTTP_PROXY parameter during the appliance build code.
 
  -- Mattalynn Darden <mattie@turnkeylinux.org>  Sat, 10 Dec 2022 15:31:14 +0000
 
