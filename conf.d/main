@@ -1,3 +1,4 @@
+
 #!/bin/sh -ex
 
 SRC=/usr/local/src
@@ -32,6 +33,8 @@ end
 EOF
 
 cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
+
+rm $WEBROOT/.ruby-version
 
 cd $WEBROOT
 [ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY

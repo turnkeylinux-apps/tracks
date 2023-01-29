@@ -1,3 +1,20 @@
+turnkey-tracks-17.0 (1) turnkey; urgency=low
+
+  * Updating tracks appliance and its dependencies to v17.0.
+
+  * Downloading tracks repository from 2.6.1 release tag from upstream github repository.
+
+  * Changing the ruby version used with the tracks software.
+  
+  * Removing ./ruby-version file from build code to allow end user to chose which ruby version to use.
+
+  * Updating tracks.py file to include refactoring done in v17.0 for
+    libinithooks.
+    
+  * Tweaking code in common/conf/rails file to remove warnings that popped up about HTTP_PROXY parameter during the appliance build code.
+
+ -- Mattalynn Darden <mattie@turnkeylinux.org>  Sat, 10 Dec 2022 15:31:14 +0000
+
 turnkey-tracks-16.1 (1) turnkey; urgency=low
 
   * Updated to latest version of Tracks: v2.5.1.

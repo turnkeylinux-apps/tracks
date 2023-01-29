@@ -10,4 +10,3 @@ VERSION="2.6.1"
 SRC="/usr/local/src"
 dl https://github.com/TracksApp/tracks/archive/v${VERSION}.zip $SRC
 mv $SRC/v${VERSION}.zip $SRC/tracks-${VERSION}.zip
-
