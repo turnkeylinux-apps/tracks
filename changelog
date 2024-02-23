@@ -1,3 +1,14 @@
+turnkey-tracks-18.0 (1) turnkey; urgency=low
+
+  * Updated all relevant Debian packages to Bookworm/12 versions.
+
+  * Updated gem dependencies.
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Anton Pyrogovskyi <anton@turnkeylinux.org>  Fri, 23 Feb 2024 17:43:26 +0100
+
 turnkey-tracks-17.1 (1) turnkey; urgency=low
 
   * Updated all Debian packages to latest.
