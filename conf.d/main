@@ -19,19 +19,6 @@ mv $(dirname $WEBROOT)/tracks-* $WEBROOT
 cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
 rm -rf $WEBROOT.orig
 
-# work around MariaDBv10.1 bug
-cat > $WEBROOT/config/initializers/ar_innodb_row_format.rb <<EOF
-require 'active_record/connection_adapters/abstract_mysql_adapter'
-
-module ActiveRecord
-  module ConnectionAdapters
-    class AbstractMysqlAdapter
-      NATIVE_DATABASE_TYPES[:string] = { :name => "varchar", :limit => 191 }
-    end
-  end
-end
-EOF
-
 cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 
 rm $WEBROOT/.ruby-version
