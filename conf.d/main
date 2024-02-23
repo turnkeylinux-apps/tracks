@@ -25,7 +25,16 @@ rm $WEBROOT/.ruby-version
 
 cd $WEBROOT
 [ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
+
+# rails fixes
+echo >> Gemfile
+echo '# TKL: Fixes for old Rails with new Ruby causing issues' >> Gemfile
+echo gem "'psych', '< 4'" >> Gemfile
+echo gem "'net-smtp', require: false" >> Gemfile
+echo gem "'net-pop', require: false" >> Gemfile
+
 bundle --without=test install
+bundle update
 bundle exec rake db:migrate RAILS_ENV="production"
 unset HTTP_PROXY
 
