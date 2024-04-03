@@ -19,26 +19,22 @@ mv $(dirname $WEBROOT)/tracks-* $WEBROOT
 cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
 rm -rf $WEBROOT.orig
 
-# work around MariaDBv10.1 bug
-cat > $WEBROOT/config/initializers/ar_innodb_row_format.rb <<EOF
-require 'active_record/connection_adapters/abstract_mysql_adapter'
-
-module ActiveRecord
-  module ConnectionAdapters
-    class AbstractMysqlAdapter
-      NATIVE_DATABASE_TYPES[:string] = { :name => "varchar", :limit => 191 }
-    end
-  end
-end
-EOF
-
 cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 
 rm $WEBROOT/.ruby-version
 
 cd $WEBROOT
 [ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
+
+# rails fixes
+echo >> Gemfile
+echo '# TKL: Fixes for old Rails with new Ruby causing issues' >> Gemfile
+echo gem "'psych', '< 4'" >> Gemfile
+echo gem "'net-smtp', require: false" >> Gemfile
+echo gem "'net-pop', require: false" >> Gemfile
+
 bundle --without=test install
+bundle update
 bundle exec rake db:migrate RAILS_ENV="production"
 unset HTTP_PROXY
 
