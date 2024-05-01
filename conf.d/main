@@ -1,5 +1,4 @@
-
-#!/bin/sh -ex
+#!/bin/bash -ex
 
 SRC=/usr/local/src
 WEBROOT=/var/www/tracks
@@ -24,7 +23,9 @@ cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
 rm $WEBROOT/.ruby-version
 
 cd $WEBROOT
-[ "$FAB_HTTP_PROXY" ] && export HTTP_PROXY=$FAB_HTTP_PROXY
+
+[[ -z "$FAB_HTTP_PROXY" ]] || export http_proxy=$FAB_HTTP_PROXY
+[[ -z "$FAB_HTTPS_PROXY" ]] || export https_proxy=$FAB_HTTPS_PROXY
 
 # rails fixes
 echo >> Gemfile
@@ -33,19 +34,19 @@ echo gem "'psych', '< 4'" >> Gemfile
 echo gem "'net-smtp', require: false" >> Gemfile
 echo gem "'net-pop', require: false" >> Gemfile
 
-bundle --without=test install
+# fix broken dep - see https://github.com/TracksApp/tracks/blob/ruby31/Gemfile#L32
+sed -i "\|^gem 'therubyracer',|s|'therubyracer'|'mini_racer'|" Gemfile
+
+export RAILS_ENV="production"
+bundle config set --local path 'vendor/bundle'
+bundle config set --local without 'postgresql sqlite'
 bundle update
-bundle exec rake db:migrate RAILS_ENV="production"
-unset HTTP_PROXY
+bundle exec rake db:migrate
 
 # configure permissions
-mkdir -p $WEBROOT/tmp/cache
-chown -R www-data:www-data $WEBROOT/tmp
-chown -R www-data:www-data $WEBROOT/log
+mkdir -p $WEBROOT/{tmp/cache,public/uploads/csv}
+chown -R www-data:www-data $WEBROOT/{tmp,log,public/uploads}
 chmod 666 $WEBROOT/log/*
-
-mkdir -p $WEBROOT/public/uploads/csv/
-chown -R www-data:www-data $WEBROOT/public/uploads
 
 # precompile assets
 bundle exec rake assets:precompile RAILS_ENV=production
@@ -86,10 +87,10 @@ curl -s -X POST -b /tmp/cookies.txt http://localhost/users \
         --data-urlencode "user%5Bpassword%5D=${ADMIN_PASS}" \
         --data-urlencode "user%5Bpassword_confirmation%5D=${ADMIN_PASS}"
 
-service apache2 stop
-
+# clean up
+unset RAILS_ENV http_proxy https_proxy
 rm -f /tmp/cookies.txt
 
-# stop mysql
+# stop services
 service mysql stop
-
+service apache2 stop
