@@ -2,6 +2,8 @@ turnkey-tracks-18.1 (1) turnkey; urgency=low
 
   * v18.1 rebuild - includes latest Debian & TurnKey packages.
 
+  * Update Tracks: v2.7.1.
+
   * fix DB corruption on reboot - closes #1983.
 
   * Adds 'mariadb_admin' DB user - exclusively for use in the Webmin MariaDB
@@ -20,7 +22,7 @@ turnkey-tracks-18.1 (1) turnkey; urgency=low
     - DOSLogDir - use default log dir & fix permissions - closes #1950.
     - Add DOSWhitelist example - commented out.
 
- -- Jeremy Davis <jeremy@turnkeylinux.org>  Thu, 12 Sep 2024 06:35:24 +0000
+ -- Jeremy Davis <jeremy@turnkeylinux.org>  Wed, 25 Sep 2024 05:08:41 +0000
 
 turnkey-tracks-18.0 (1) turnkey; urgency=low
 
