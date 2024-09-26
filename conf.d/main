@@ -1,5 +1,4 @@
 #!/bin/bash -ex
-
 SRC=/usr/local/src
 WEBROOT=/var/www/tracks
 
@@ -9,38 +8,26 @@ ADMIN_PASS=turnkey1
 # start mysql
 service mysql start
 
-# install tracks and configure it
-unzip $SRC/tracks-*.zip -d $(dirname $WEBROOT)
-rm $SRC/tracks-*.zip
-
-mv $WEBROOT $WEBROOT.orig
-mv $(dirname $WEBROOT)/tracks-* $WEBROOT
-cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
-rm -rf $WEBROOT.orig
-
-cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
-
-rm $WEBROOT/.ruby-version
-
-cd $WEBROOT
-
 [[ -z "$FAB_HTTP_PROXY" ]] || export http_proxy=$FAB_HTTP_PROXY
 [[ -z "$FAB_HTTPS_PROXY" ]] || export https_proxy=$FAB_HTTPS_PROXY
 
-# rails fixes
-echo >> Gemfile
-echo '# TKL: Fixes for old Rails with new Ruby causing issues' >> Gemfile
-echo gem "'psych', '< 4'" >> Gemfile
-echo gem "'net-smtp', require: false" >> Gemfile
-echo gem "'net-pop', require: false" >> Gemfile
+# clone repo
+REPO=TracksApp/tracks
+VERSION=$(gh_releases $REPO | grep -iv 'ALPHA\|BETA\|RC' | sort -V | tail -1)
+mv $WEBROOT $WEBROOT.orig
+git clone --branch=$VERSION https://github.com/$REPO $WEBROOT
 
-# fix broken dep - see https://github.com/TracksApp/tracks/blob/ruby31/Gemfile#L32
-sed -i "\|^gem 'therubyracer',|s|'therubyracer'|'mini_racer'|" Gemfile
+# config
+cp $WEBROOT.orig/config/database.yml $WEBROOT/config/database.yml
+cp $WEBROOT/config/site.yml.tmpl $WEBROOT/config/site.yml
+rm $WEBROOT/.ruby-version # required to install on latest Ruby stable (v3.1)
 
+# install
+cd $WEBROOT
 export RAILS_ENV="production"
 bundle config set --local path 'vendor/bundle'
 bundle config set --local without 'postgresql sqlite'
-bundle update
+bundle install
 bundle exec rake db:migrate
 
 # configure permissions
@@ -49,7 +36,11 @@ chown -R www-data:www-data $WEBROOT/{tmp,log,public/uploads}
 chmod 666 $WEBROOT/log/*
 
 # precompile assets
-bundle exec rake assets:precompile RAILS_ENV=production
+# Setting 'RAILS_GROUPS=assets' works around
+# https://github.com/TracksApp/tracks/issues/3065
+# See https://github.com/TracksApp/tracks/issues/3065#issuecomment-2400803381
+# for reason/rationale.
+RAILS_GROUPS=assets bundle exec rake assets:precompile
 
 # turnkey-credit (passenger substitute x2 bug)
 cat >>$WEBROOT/app/assets/stylesheets/tracks.css.scss<<EOF
@@ -87,10 +78,10 @@ curl -s -X POST -b /tmp/cookies.txt http://localhost/users \
         --data-urlencode "user%5Bpassword%5D=${ADMIN_PASS}" \
         --data-urlencode "user%5Bpassword_confirmation%5D=${ADMIN_PASS}"
 
-# clean up
+# clean up & finalize
+rm -rf $WEBROOT.orig
 unset RAILS_ENV http_proxy https_proxy
 rm -f /tmp/cookies.txt
-
-# stop services
+rails tmp:clear
 service mysql stop
 service apache2 stop
