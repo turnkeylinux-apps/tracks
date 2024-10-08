@@ -2,27 +2,27 @@ turnkey-tracks-18.1 (1) turnkey; urgency=low
 
   * v18.1 rebuild - includes latest Debian & TurnKey packages.
 
-  * Update Tracks: v2.7.1.
+  * Install latest Tracks release: v2.7.1
+    - install via git using release tag (v18.0 used 'master').
 
-  * fix DB corruption on reboot - closes #1983.
+  * Rebuild to fix DB corruption on reboot - closes #1983.
 
   * Adds 'mariadb_admin' DB user - exclusively for use in the Webmin MariaDB
     module. Part of #1945.
 
   * Configuration console (confconsole) - v2.1.6:
-    - Bugfix broken DNS-01 Let's Encrypt challenge - closes #1876 & #1895.
-      Fixed in v2.1.5 - already included in some appliances.
     - Let's Encrypt/Dehydrated - bugfix cron failure - closes #1962.
     - General dehydrated-wrapper code cleanup - now passes shellcheck.
+    [Jeremy Davis <jeremy@turnkeylinux.org>]
 
   * Reduce log noise by creating ntpsec log dir - closes #1952.
 
   * Apache mod_evasive config improvements:
     - Bump DOSPageCount from (default) 2 -> 5 - closes #1951.
     - DOSLogDir - use default log dir & fix permissions - closes #1950.
-    - Add DOSWhitelist example - commented out.
+    - Add DOSWhitelist example in conf - commented out.
 
- -- Jeremy Davis <jeremy@turnkeylinux.org>  Wed, 25 Sep 2024 05:08:41 +0000
+ -- Jeremy Davis <jeremy@turnkeylinux.org>  Tue, 08 Oct 2024 21:07:30 +0000
 
 turnkey-tracks-18.0 (1) turnkey; urgency=low
 
