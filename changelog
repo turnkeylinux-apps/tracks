@@ -5,6 +5,9 @@ turnkey-tracks-18.1 (1) turnkey; urgency=low
   * Install latest Tracks release: v2.7.1
     - install via git using release tag (v18.0 used 'master').
 
+  * Use oldest stable Ruby: v3.1.x (Tracks notes v3.0.x - but that is now
+    EOL).
+
   * Rebuild to fix DB corruption on reboot - closes #1983.
 
   * Adds 'mariadb_admin' DB user - exclusively for use in the Webmin MariaDB
